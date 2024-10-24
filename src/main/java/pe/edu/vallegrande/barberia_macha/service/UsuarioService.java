@@ -72,4 +72,13 @@ public class UsuarioService {
         }
     }
 
+    public Optional<Usuario> verificarCredenciales(String email, String password) {
+        return usuarioRepository.findByEmailAndPassword(email, password);
+    }
+
+    public List<Usuario> listarBarberos() {
+        return usuarioRepository.findByRol("barbero"); // Asegúrate de tener este método en tu repositorio
+    }
+
+
 }

@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.vallegrande.barberia_macha.model.LoginRequest;
 import pe.edu.vallegrande.barberia_macha.model.Usuario;
 import pe.edu.vallegrande.barberia_macha.service.UsuarioService;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +21,36 @@ public class UserController {
     public List<Usuario> listarUsuarios() {
         return usuarioService.listarUsuarios();
     }
+
+    /*@PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        Optional<Usuario> usuarioOpt = usuarioService.verificarCredenciales(loginRequest.getEmail(), loginRequest.getPassword());
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            return ResponseEntity.ok(Map.of("message", "Login exitoso", "rol", usuario.getRol(), "idUsuario", usuario.getIdUsuario()));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+        }
+    }*/
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        Optional<Usuario> usuarioOpt = usuarioService.verificarCredenciales(loginRequest.getEmail(), loginRequest.getPassword());
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            return ResponseEntity.ok(Map.of("message", "Login exitoso", "rol", usuario.getRol(), "idUsuario", usuario.getIdUsuario()));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+        }
+    }
+
+    @GetMapping("/barberos")
+    public List<Usuario> listarBarberos() {
+        return usuarioService.listarBarberos(); // Implementa este método en tu servicio
+    }
+
 
     @GetMapping("/activos")
     public List<Usuario> listarUsuariosActivos() {

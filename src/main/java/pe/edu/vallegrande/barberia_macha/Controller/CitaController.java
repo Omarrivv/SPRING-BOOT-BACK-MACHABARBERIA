@@ -29,7 +29,7 @@ public class CitaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<Cita> guardarCita(@RequestBody Cita cita) {
         try {
             Cita nuevaCita = citaService.guardarCita(cita);
@@ -37,7 +37,22 @@ public class CitaController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }*/
+
+    @PostMapping
+    public ResponseEntity<Cita> guardarCita(@RequestBody Cita cita) {
+        try {
+            // Verifica que cliente y barbero están presentes
+            if (cita.getCliente() == null || cita.getBarbero() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            Cita nuevaCita = citaService.guardarCita(cita);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaCita);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Cita> actualizarCita(@PathVariable Long id, @RequestBody Cita citaActualizada) {
