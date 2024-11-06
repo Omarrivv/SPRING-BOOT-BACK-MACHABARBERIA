@@ -34,6 +34,8 @@ public class Producto {
     @Temporal(TemporalType.DATE)
     private Date fechaExpiracion;
 
+//    xd
+
     private Integer estado = 1;
 
     @ManyToOne
