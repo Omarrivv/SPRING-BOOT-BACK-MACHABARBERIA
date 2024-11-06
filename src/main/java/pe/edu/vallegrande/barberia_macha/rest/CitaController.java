@@ -1,4 +1,4 @@
-package pe.edu.vallegrande.barberia_macha.Controller;
+package pe.edu.vallegrande.barberia_macha.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +22,12 @@ public class CitaController {
         return citaService.listarCitas();
     }
 
+    @GetMapping("/pendientes")
+    public List<Map<String, Object>> listarCitasPendientesConDetalles() {
+        return citaService.listarCitasPendientesConDetalles();
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<Cita> obtenerCita(@PathVariable Long id) {
         Optional<Cita> cita = citaService.obtenerCitaPorId(id);
@@ -29,15 +35,6 @@ public class CitaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /*@PostMapping
-    public ResponseEntity<Cita> guardarCita(@RequestBody Cita cita) {
-        try {
-            Cita nuevaCita = citaService.guardarCita(cita);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaCita);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }*/
 
     @PostMapping
     public ResponseEntity<Cita> guardarCita(@RequestBody Cita cita) {

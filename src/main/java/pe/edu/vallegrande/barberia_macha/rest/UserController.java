@@ -1,4 +1,4 @@
-package pe.edu.vallegrande.barberia_macha.Controller;
+package pe.edu.vallegrande.barberia_macha.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

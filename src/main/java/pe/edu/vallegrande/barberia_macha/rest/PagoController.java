@@ -1,14 +1,18 @@
-package pe.edu.vallegrande.barberia_macha.Controller;
+package pe.edu.vallegrande.barberia_macha.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.vallegrande.barberia_macha.model.Cita;
 import pe.edu.vallegrande.barberia_macha.model.Pago;
+import pe.edu.vallegrande.barberia_macha.service.CitaService;
 import pe.edu.vallegrande.barberia_macha.service.PagoService;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.*;
 
 @RestController
 @RequestMapping("/pagos")
@@ -16,10 +20,39 @@ public class PagoController {
     @Autowired
     private PagoService pagoService;
 
+    @Autowired
+    private CitaService citaService;  // Injecting CitaService
+
     @GetMapping
     public List<Pago> listarPagos() {
         return pagoService.listarPagos();
     }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<Map<String, Object>>> obtenerPagosPorParametros(
+            @RequestParam Long idBarbero,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam Double porcentaje) {
+
+        List<Map<String, Object>> pagos = pagoService.obtenerPagosPorParametros(idBarbero, fechaInicio, fechaFin, porcentaje);
+        return ResponseEntity.ok(pagos);
+    }
+
+    @GetMapping("/{id}/detalle")
+    public ResponseEntity<Map<String, Object>> obtenerDetallePago(@PathVariable Long id) {
+        Optional<Pago> pagoOpt = pagoService.obtenerPagoPorId(id);
+        if (pagoOpt.isPresent()) {
+            Pago pago = pagoOpt.get();
+            Map<String, Object> response = new HashMap<>();
+            response.put("pago", pago);
+            response.put("cita", pago.getCita());
+            response.put("barbero", pago.getCita().getBarbero());  // Asumiendo que hay un método getBarbero() en la entidad Cita.
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Pago> obtenerPago(@PathVariable Long id) {
@@ -31,12 +64,22 @@ public class PagoController {
     @PostMapping
     public ResponseEntity<Pago> guardarPago(@RequestBody Pago pago) {
         try {
+            // Validar si la cita existe
+            Optional<Cita> citaOpt = citaService.obtenerCitaPorId(pago.getCita().getIdCita());
+            if (!citaOpt.isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            // Asignar la cita al pago y guardar
+            pago.setCita(citaOpt.get());
             Pago nuevoPago = pagoService.guardarPago(pago);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPago);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Pago> actualizarPago(@PathVariable Long id, @RequestBody Pago pagoActualizado) {

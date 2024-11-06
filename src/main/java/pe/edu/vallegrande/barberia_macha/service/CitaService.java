@@ -6,6 +6,7 @@ import pe.edu.vallegrande.barberia_macha.model.Cita;
 import pe.edu.vallegrande.barberia_macha.repository.CitaRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -15,6 +16,10 @@ public class CitaService {
 
     public List<Cita> listarCitas() {
         return citaRepository.findAll();
+    }
+
+    public List<Map<String, Object>> listarCitasPendientesConDetalles() {
+        return citaRepository.listarCitasPendientesConDetalles();
     }
 
     public Optional<Cita> obtenerCitaPorId(Long id) {
