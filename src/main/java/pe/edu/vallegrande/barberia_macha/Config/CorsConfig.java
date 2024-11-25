@@ -9,10 +9,10 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200", "https://9000-idx-flutterproyecto-1727982834948.cluster-iesosxm5fzdewqvhlwn5qivgry.cloudworkstations.dev") // Agrega el puerto de Flutter
+//                .allowedOrigins("http://localhost:4200", "https://9000-idx-barbershopmacha-1729820839509.cluster-m7tpz3bmgjgoqrktlvd4ykrc2m.cloudworkstations.dev") // Agrega el puerto de Flutter
+                .allowedOrigins("*") // Permitir cualquier origen
                 .allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS")
                 .allowedHeaders("*")
-                .maxAge(3600)
-                .allowCredentials(true);
+                .maxAge(3600);
     }
 }

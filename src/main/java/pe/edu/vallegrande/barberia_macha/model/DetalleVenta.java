@@ -3,7 +3,7 @@ package pe.edu.vallegrande.barberia_macha.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "detalle_venta")
+@Table(name = "detalle_venta", schema = "gracielacaceres")
 public class DetalleVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
